@@ -1,0 +1,17 @@
+<div class="step-text">
+<h5 id="description">Description</h5>
+<p>Congratulations! Now you have a working K-Means algorithm. However, simply implementing the algorithm is not enough, as it does require us to tune a major hyperparameter: <code class="java">k</code>.</p>
+<p>There are several methods how one could find an appropriate value for it. We would cover two methods: the elbow rule and determining the silhouette score. Let us start with the elbow rule.</p>
+<p>In order to use it, we need to calculate the sum of squares of distances from each of the items to the centroids, i.e. calculate</p>
+<p><span class="math-tex">\[\sum\limits_i \sum\limits_{j} (x_{i, j} - c_{i, j})^2\]</span>Here $x_i$ is the $i$-th item, $c_i$ is the center of the cluster we assigned $x_i$ to. $j$ enumerates the features. In fact, we ask you to calculate the sum of squares of euclidean distances from items to the corresponding cluster centers. This value is called "inertia" in <a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html" rel="noopener noreferrer nofollow" target="_blank">scikit-learn implementation</a>, for example.</p>
+<p>We would run your coded algorithm with different <code class="java">k</code> values ranging from $2$ to $10$ and find which <code class="java">k</code> value is the most accurate. To do that given the inertia values, we need to find the point where the inertia's "speed" of decreasing falls down (that would look like an elbow, you won't miss it in our example).</p>
+<h5 id="objectives">Objectives</h5>
+<ol>
+<li>Use the custom K-Means class with <code class="java">k</code> ranging from $2$ to $10$ (both included) and calculate the inertia for each <code class="java">k</code>.</li>
+<li>Print the results for the "error" for each of the <code class="java">k</code> values.</li>
+<li>To find the desired <code class="java">k</code>, plot the dependence of the inertia from <code class="java">k</code> and look for the "elbow".</li>
+</ol>
+<h5 id="example">Example</h5>
+<p><strong>Example 1:</strong> <em>an example of the output</em></p>
+<pre><code class="language-no-highlight">[9, 8, 7, 6, 5, 4, 3, 2, 1]</code></pre>
+</div>
