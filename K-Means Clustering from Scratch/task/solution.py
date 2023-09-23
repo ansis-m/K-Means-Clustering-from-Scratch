@@ -50,11 +50,12 @@ def plot_comparison(data: np.ndarray, predicted_clusters: np.ndarray, true_clust
 def calculate_distances(X_full: np.ndarray):
 
     centers = X_full[:3]
-    last_ten_points = X_full[-10:]
-    distances = np.sum((last_ten_points[:, np.newaxis] - centers)**2, axis=2)
+    distances = np.sum((X_full[:, np.newaxis] - centers)**2, axis=2)
     nearest_center_indices = np.argmin(distances, axis=1)
-    nearest_center_indices_list = nearest_center_indices.tolist()
-    print(nearest_center_indices_list)
+
+    new_centers = np.array([X_full[nearest_center_indices == i].mean(axis=0) for i in range(centers.shape[0])])
+
+    print(new_centers.flatten().tolist())
 
 
 
