@@ -47,24 +47,35 @@ def plot_comparison(data: np.ndarray, predicted_clusters: np.ndarray, true_clust
         plt.show()
 
 
-if __name__ == '__main__':
+def calculate_distances(X_full: np.ndarray):
 
-    # Load data
+    centers = X_full[:3]
+    last_ten_points = X_full[-10:]
+    distances = np.sum((last_ten_points[:, np.newaxis] - centers)**2, axis=2)
+    nearest_center_indices = np.argmin(distances, axis=1)
+    nearest_center_indices_list = nearest_center_indices.tolist()
+    print(nearest_center_indices_list)
+
+
+
+def main():
     data = load_wine(as_frame=True, return_X_y=True)
+    # print(data)
     X_full, y_full = data
 
-    # Permutate it to make things more interesting
     rnd = np.random.RandomState(42)
     permutations = rnd.permutation(len(X_full))
     X_full = X_full.iloc[permutations]
     y_full = y_full.iloc[permutations]
 
-    # From dataframe to ndarray
     X_full = X_full.values
     y_full = y_full.values
 
-    # Scale data
     scaler = StandardScaler()
     X_full = scaler.fit_transform(X_full)
 
-    # write your code here
+    calculate_distances(X_full)
+
+if __name__ == '__main__':
+    main()
+
