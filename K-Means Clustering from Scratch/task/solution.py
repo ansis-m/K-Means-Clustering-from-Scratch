@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 
-CENTERS = 2
+CENTERS = list(range(2, 11))
 EPS = 1e-6
 
 
@@ -61,31 +61,49 @@ class CustomKMeans:
     def __init__(self, data, k=CENTERS):
         self.k = k
         self.data = data
-        self.centers = data[:k]
+        self.centers_count = k
+        self.errors = []
 
     def fit(self, eps=EPS):
 
-        while True:
-            distances = np.sum((self.data[:, np.newaxis] - self.centers) ** 2, axis=2)
-            nearest_center_indices = np.argmin(distances, axis=1)
-            new_centers = np.array(
-                [self.data[nearest_center_indices == i].mean(axis=0) for i in range(self.centers.shape[0])])
-            squared_distances = np.linalg.norm(self.centers - new_centers, axis=1) ** 2
-            if not np.max(squared_distances) >= eps:
-                break
-            self.centers = new_centers
+        for i in self.centers_count:
+            centers = self.data[:i]
+            while True:
+                distances = np.sum((self.data[:, np.newaxis] - centers) ** 2, axis=2)
+                nearest_center_indices = np.argmin(distances, axis=1)
+                new_centers = np.array(
+                    [self.data[nearest_center_indices == i].mean(axis=0) for i in range(centers.shape[0])])
+                squared_distances = np.linalg.norm(centers - new_centers, axis=1) ** 2
+                if not np.max(squared_distances) >= eps:
+                    break
+                centers = new_centers
+            self.calculate_error(centers)
 
         return self
 
-    def predict(self):
-        distances = np.sum((self.data[:10, np.newaxis] - self.centers) ** 2, axis=2)
+    def predict(self, centers):
+        distances = np.sum((self.data[:, np.newaxis] - centers) ** 2, axis=2)
         nearest_center_indices = np.argmin(distances, axis=1)
-        print(nearest_center_indices.tolist())
+        return nearest_center_indices
+
+    def calculate_error(self, centers):
+        indices = self.predict(centers)
+
+        error = 0
+        for index, center in enumerate(centers):
+            cluster_data = self.data[indices == index]
+            squared_distances = np.sum((cluster_data - center) ** 2)
+            error += squared_distances
+
+        self.errors.append(error)
+        return self
+
+    def print(self):
+        print(self.errors)
 
 
 def main():
     data = load_wine(as_frame=True, return_X_y=True)
-    # print(data)
     X_full, y_full = data
 
     rnd = np.random.RandomState(42)
@@ -99,9 +117,7 @@ def main():
     scaler = StandardScaler()
     X_full = scaler.fit_transform(X_full)
 
-    # calculate_distances(X_full)
-
-    CustomKMeans(X_full).fit().predict()
+    CustomKMeans(X_full).fit().print()
 
 
 if __name__ == '__main__':
