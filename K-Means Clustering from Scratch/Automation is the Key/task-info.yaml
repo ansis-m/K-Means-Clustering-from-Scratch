@@ -131,5 +131,8 @@ files:
     if __name__ == '__main__':    Tests5().run_tests()
   learner_created: false
 feedback_link: https://hyperskill.org/projects/286/stages/1493/implement#comment
-status: Unchecked
-record: -1
+status: Solved
+feedback:
+  message: Congratulations!
+  time: "Sun, 24 Sep 2023 11:11:04 UTC"
+record: 5

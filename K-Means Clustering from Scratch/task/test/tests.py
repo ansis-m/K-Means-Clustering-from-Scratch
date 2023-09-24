@@ -3,13 +3,13 @@ from hstest.stage_test import List
 from utils.utils import full_check, get_list
 
 # The source data I will test on
-true_data = [1659.0079672511501, 1277.9284888446423, 1184.37175739989,
-             1132.906069316758, 1089.309092941588, 1032.9269218829274,
-             1000.2102797083473, 946.43416359717, 907.8475134860948]
+true_data = [0.2683134097105212, 0.2848589191898987, 0.2656988172122933,
+             0.18095763134156362, 0.17996607210955454, 0.17087615229095043,
+             0.12964932745571078, 0.13317405614855718, 0.1261114052668434]
 
 
 
-class Tests4(StageTest):
+class Tests5(StageTest):
 
     def generate(self) -> List[TestCase]:
         return [TestCase(time_limit=1000000)]
@@ -30,7 +30,7 @@ class Tests4(StageTest):
         except Exception:
             return CheckResult.wrong('Seems that data output is in wrong format!')
 
-        error = 'Incorrect error values. Check how you calculate the error for each k.'
+        error = 'Incorrect silhouette scores.'
         check_result = full_check(student, true_data, '', tolerance=0.1, error_str=error)
         if check_result:
             return check_result
@@ -39,4 +39,4 @@ class Tests4(StageTest):
 
 
 if __name__ == '__main__':
-    Tests4().run_tests()
+    Tests5().run_tests()

@@ -3,6 +3,7 @@ from sklearn.datasets import load_wine
 from matplotlib import pyplot as plt
 import seaborn as sns
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import silhouette_score
 
 CENTERS = list(range(2, 11))
 EPS = 1e-6
@@ -47,22 +48,13 @@ def plot_comparison(data: np.ndarray, predicted_clusters: np.ndarray, true_clust
         plt.show()
 
 
-def calculate_distances(X_full: np.ndarray):
-    centers = X_full[:3]
-    distances = np.sum((X_full[:, np.newaxis] - centers) ** 2, axis=2)
-    nearest_center_indices = np.argmin(distances, axis=1)
-
-    new_centers = np.array([X_full[nearest_center_indices == i].mean(axis=0) for i in range(centers.shape[0])])
-
-    print(new_centers.flatten().tolist())
-
-
 class CustomKMeans:
     def __init__(self, data, k=CENTERS):
         self.k = k
         self.data = data
         self.centers_count = k
         self.errors = []
+        self.silhouette_scores = []
 
     def fit(self, eps=EPS):
 
@@ -84,6 +76,7 @@ class CustomKMeans:
     def predict(self, centers):
         distances = np.sum((self.data[:, np.newaxis] - centers) ** 2, axis=2)
         nearest_center_indices = np.argmin(distances, axis=1)
+        self.silhouette_scores.append(silhouette_score(self.data, nearest_center_indices))
         return nearest_center_indices
 
     def calculate_error(self, centers):
@@ -99,7 +92,7 @@ class CustomKMeans:
         return self
 
     def print(self):
-        print(self.errors)
+        print(self.silhouette_scores)
 
 
 def main():
