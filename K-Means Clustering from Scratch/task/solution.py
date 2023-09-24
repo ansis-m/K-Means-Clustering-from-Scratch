@@ -4,12 +4,12 @@ from matplotlib import pyplot as plt
 import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 
-# scroll down to the bottom to implement your solution
+CENTERS = 2
+EPS = 1e-6
 
 
 def plot_comparison(data: np.ndarray, predicted_clusters: np.ndarray, true_clusters: np.ndarray = None,
                     centers: np.ndarray = None, show: bool = True):
-
     # Use this function to visualize the results on Stage 6.
 
     if true_clusters is not None:
@@ -48,15 +48,39 @@ def plot_comparison(data: np.ndarray, predicted_clusters: np.ndarray, true_clust
 
 
 def calculate_distances(X_full: np.ndarray):
-
     centers = X_full[:3]
-    distances = np.sum((X_full[:, np.newaxis] - centers)**2, axis=2)
+    distances = np.sum((X_full[:, np.newaxis] - centers) ** 2, axis=2)
     nearest_center_indices = np.argmin(distances, axis=1)
 
     new_centers = np.array([X_full[nearest_center_indices == i].mean(axis=0) for i in range(centers.shape[0])])
 
     print(new_centers.flatten().tolist())
 
+
+class CustomKMeans:
+    def __init__(self, data, k=CENTERS):
+        self.k = k
+        self.data = data
+        self.centers = data[:k]
+
+    def fit(self, eps=EPS):
+
+        while True:
+            distances = np.sum((self.data[:, np.newaxis] - self.centers) ** 2, axis=2)
+            nearest_center_indices = np.argmin(distances, axis=1)
+            new_centers = np.array(
+                [self.data[nearest_center_indices == i].mean(axis=0) for i in range(self.centers.shape[0])])
+            squared_distances = np.linalg.norm(self.centers - new_centers, axis=1) ** 2
+            if not np.max(squared_distances) >= eps:
+                break
+            self.centers = new_centers
+
+        return self
+
+    def predict(self):
+        distances = np.sum((self.data[:10, np.newaxis] - self.centers) ** 2, axis=2)
+        nearest_center_indices = np.argmin(distances, axis=1)
+        print(nearest_center_indices.tolist())
 
 
 def main():
@@ -75,8 +99,10 @@ def main():
     scaler = StandardScaler()
     X_full = scaler.fit_transform(X_full)
 
-    calculate_distances(X_full)
+    # calculate_distances(X_full)
+
+    CustomKMeans(X_full).fit().predict()
+
 
 if __name__ == '__main__':
     main()
-
